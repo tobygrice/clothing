@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@365&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Tera&display=swap');
+
+body {
+    margin: 0px;
+    background-size: 100%;
+}
+
+.temp {
+    display: none;
+}
+
+
+/*---------------------- HOME ----------------------*/
+#welcome {
+    font-size: 140px;
+    padding-top: 350px;
+    padding-left: 40px;
+    font-family: 'Oswald', sans-serif;
+    color: white;
+    line-height: 95%;
+}
+
+#subhead {
+    font-size: 35px;
+    padding-left: 45px;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    max-width: 900px;
+}
+
+
+/*---------------------- MEN/WOMEN/KIDS ----------------------*/
+#filter {
+    width: 200px;
+    display: inline-block;
+    position: absolute;
+    top: 100px;
+    left: 20px;
+}
+
+#filterHead {
+    font-family: 'Lexend Tera', sans-serif;
+    font-size: 27px;
+    padding-bottom: 20px;
+}
+
+input {
+    transform: scale(1.6, 1.6);
+    margin: 13px;
+}
+
+#filterBoxes {
+    font-family:  'Poppins', sans-serif;
+    padding: 20px;
+}
+
+#filterTitle {
+    font-family: 'Lexend Tera', sans-serif;
+    padding-bottom: 15px;
+}
+
+
+#clothes {
+    display: inline-block;
+    background-color: white;
+    width: calc(100% - 310px);
+    position: absolute;
+    top: 90px;
+    left: 240px;
+    padding: 20px;
+}
+
+.noFilter{
+    height: 500px;
+    border: 1px solid grey;
+    text-align: center;
+    line-height: 500px;
+    font-family: 'Lexend Tera', sans-serif;
+    font-size: 20px;
+}
+
+.modelImg {
+    width: 100%;
+    border: 1px solid #bababa;
+    transition: 0.2s;
+}
+
+.clothItem {
+    width: 240px;
+    display: inline-block;
+    margin: 10px;
+    position: relative;
+}
+
+.itemName {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+}
+
+.itemCost {
+    font-family: 'Poppins', sans-serif;
+}
+
+.addToCart {
+    font-family: 'Poppins', sans-serif;
+    background-color: #c73232;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    transition: 0.2s;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 50%;
+    margin-left: -55px;
+    width: 110px;
+    display: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.addToCart:hover {
+    background-color: #ab2929;
+    transform: scale(1.05, 1.05)
+}
+
+/*---------------------- CHECKOUT ----------------------*/
+
+#checkout {
+    padding: 40px;
+    padding-top: 80px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+}
+
+#checkoutHead {
+    font-family: 'Lexend Tera', sans-serif;
+    font-size: 50px;
+}
+
+#cart {
+    width: 98%;
+    margin-top: 30px;
+    margin-left: 5px;
+    border: none;
+}
+
+.cartItem {
+    padding-bottom: 10px;
+}
+
+.cartPrice {
+    float: right;
+}
+
+.rmBtn {
+    color: grey;
+    text-decoration: underline;
+    display: inline;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+
+#totalTR {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+#emptyCart {
+    display: none;
+    width: 100%;
+    height: 500px;
+    border: 1px solid grey;
+    text-align: center;
+    line-height: 500px;
+    font-family: 'Lexend Tera', sans-serif;
+    font-size: 20px;
+}
+
+#shippingDrop {
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+}
+
+#shipping {
+    line-height: 60px;
+}
+
+#total {
+    line-height: 60px;
+}
+
+#finalBtn {
+    font-family: 'Poppins', sans-serif;
+    background-color: #c73232;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    transition: 0.2s;
+    margin-top: 50px;
+    font-size: 19px;
+}
+
+#finalBtn:hover {
+    background-color: #ab2929;
+    transform: scale(1.05, 1.05)
+}
+
+/*---------------------- MENU ----------------------*/
+/* https://www.w3schools.com/css/css_dropdowns.asp */
+
+#menu {
+    width: 100%;
+    padding: 5px;
+    font-size: 20px;
+    transition: top 0.3s;
+    position: fixed;
+    top: 0px;
+    background-color: white;
+    box-shadow: 0px 1px 10px grey;
+    z-index: 999;
+}
+
+#logo {
+    height: 45px;
+    padding-top: 5px;
+    padding-left: 7px;
+    transition: 0.2s;
+    opacity: 0.6;
+}
+
+#logo:hover {
+    opacity: 1;
+    transform: scale(1.08, 1.08)
+}
+
+.cell {
+    width: 23.6%;
+    padding: 4px;
+}
+
+.label {
+    background-color: #dbdbdb;
+    color: black;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Lexend Tera', sans-serif;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.menuList {
+    display: none;
+    background-color: #f9f9f9;
+    width: calc(25% - 33px);
+    z-index: 1;
+    position: absolute;
+}
+
+.menuList a {
+    padding: 12px 16px;
+    display: block;
+    text-decoration: none;
+    color: black;
+    font-size: 15px;
+    font-family: 'Manrope', sans-serif;
+    transition: 0.2s;
+}
+
+.menuList a:hover {
+    background-color: #ebebeb;
+    transform: scale(1.04, 1.04);
+}
+
+
+.cell:hover .menuList {
+    display: block;
+}
+
+.cell:hover .label {
+    background-color: #c4c4c4;
+}

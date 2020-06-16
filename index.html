@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fash'n Home</title>
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script language="JavaScript" src="script.js"></script>
+    <script>
+        var stock, clothType, type, price, shipCost, newScroll, checked, i, gender, p, btn, name, price, input, stockAmount, stock, src, altsrc, items, priceList, finalTotal;
+        var cart = []; // declare and define global variables:
+        var total = 0;
+        var j = 0;
+        var initScroll = 0;
+        
+        function checkMenu() { /* runs every time the page is scrolled */
+            if (window.pageYOffset > 60) { // make sure the user has actually started scrolling
+                if (initScroll > window.pageYOffset) $("#menu").css("top", "0"); // user scrolled up
+                else $("#menu").css("top", "-90px"); // user scrolled down, hide menu
+                initScroll = window.pageYOffset; // reset initial scroll variable
+            }
+        }
+        
+        function redirect(clothType, type) {
+            $(".temp").css("display", "none"); // hide all elements created on page load
+            if (type=="home") {
+                buildHome(); // home page has a bg image, hidden overflow and different menu styling.
+            } else {
+                demolishHome(); // remove bg image, show page overflow, give menu bar bg colour white and shadow.
+                buildShop(clothType, type);
+            }
+        }
+        
+        function buildHome() {
+            $("#menu").css({"box-shadow": "none", "background-color": "transparent"});
+            $("#logo").css("filter", "brightness(100%)"); 
+            $("body").css({"background-image": "url('images/background.jpg')", "overflow": "hidden"});
+            $("#welcome, #subhead").css("display", "block");
+        }
+        
+        function demolishHome() {
+            $("#menu").css({"box-shadow": "0px 1px 10px grey", "background-color": "white"}); // add a background and shadow to the menu bar
+            $("#logo").css("filter", "brightness(70%)"); // dim the logo
+            $("body").css({"background-image": "none", "overflow": "visible"}); // remove background image
+            $(".temp").css("display", "none"); // hide all elements created on page load
+        }
+        
+        function allType(type) {
+            // only called when user clicks 'men', 'women', or 'kids' in the menu
+            if (type == "men") {
+                redirect("shirts", type); // redirect to mens as though user had selected 'shirts'
+                buildItems("pants", type); // then append every other men's item
+                buildItems("hoodies", type);
+                buildItems("jackets", type);
+            } else if (type == "women") {
+                redirect("dresses", type);
+                buildItems("skirts", type);
+                buildItems("pants", type);
+                buildItems("jackets", type);
+            } else {
+                redirect("boys", type);
+                buildItems("girls", type);
+            }
+            $("input[name='" + type + "']:checkbox").prop('checked', true); // select all checkboxes for type
+        }
+        
+        function buildShop(clothType, type) {
+            $("#other").css("display", "block");
+            $("#clothes").html("");
+            checked = document.getElementsByTagName("input"); // get all <input> elements
+            for (i=0; i<checked.length; i++) { // uncheck all checkboxes
+                if (checked[i].type == "checkbox") checked[i].checked = false; 
+            }
+            for (i=0, typeElems=document.getElementsByName(type); i<typeElems.length; i++) { 
+                if (typeElems[i].value == clothType) typeElems[i].checked = true; // check correct checkbox
+            }
+            buildItems(clothType, type);
+        }
+        
+        function filter(input) {
+            if (input.checked == true) { // button was checked
+                if ($("#clothes").text() == "PLEASE SELECT A FILTER TO CONTINUE") {
+                    // no filters were previously selected
+                    $("#clothes").text("");
+                    $("#clothes").removeClass("noFilter"); // hide the no filter message
+                } 
+                buildItems(input.value, input.name); // add items with correct filter
+            } else { // button was unchecked
+                $("#" + input.name + "_" + input.value).remove();
+                if ($("#clothes").html() == "") { // no filters
+                    $("#clothes").text("PLEASE SELECT A FILTER TO CONTINUE");
+                    $("#clothes").addClass("noFilter"); // restyles the clothes div
+                }
+            }
+        }
+        
+        function buildItems(clothType, type) {
+            getPriceList(clothType, type);
+            stockAmount = stock[stock.indexOf(clothType)+1]; // find the value superceding clothType in the "stock" array, which will be the quantity of stock.
+            items = "<div id='" + type + "_" + clothType + "' style='display:inline;'>"; // eg #men_shirts
+            for (i=1,p=0; i<=stockAmount; i++,p+=2,j++) { 
+                /* i starts at 1 and is increased by 1, p starts at 0 and is increased by 2, j starts at its current value and increases by one. j is not reset by the loop as it allows each item to have a unique ID when a new filter is selected. p is increased by 2 because data for 1 item has two elements in the priceList array, name and cost. i is used for image sources. */
+                src = "images/" + type + "/" + clothType + "/" + clothType + i + ".jpg"; // image src
+                altsrc = "images/" + type + "/" + clothType + "/" + clothType + i + "_alt.jpg"; // image back src
+                items += "<div id='" + j + "' class='clothItem' onmouseover='hover(\"" + src + "\", \"" + altsrc + "\", true, this)' onmouseout='hover(\"" + src + "\", \"" + altsrc + "\", false, this)'><img id='img" + j + "' class='modelImg' src='" + src + "'><div class='itemName'>" + priceList[p] + "</div><div class='itemCost'>$" + priceList[p+1] + "</div><button class='addToCart' id='btn" + j + "' onclick='addToCart(this, \"" + priceList[p] + "\", \"" + priceList[p+1] + "\")'>ADD TO CART</button></div>";
+            }
+            $("#clothes").append(items + "</div>"); // append the elements to the clothes div.
+            
+            /* example of one iteration's addition to "string": 
+            <div id='j' class='clothItem' onmouseover='hover(src, altsrc, true, this)' onmouseout='hover(src, altsrc, false, this)'>
+                <img id='img j' class='modelImg' src='src'>
+                <div class='itemName'>priceList[p]</div>
+                <div class='itemCost'>priceList[p+1]</div>
+                <button class='addToCart' id='btn j' onclick='addToCart(this, priceList[p], priceList[p+1])'>ADD TO CART</button>
+            </div>
+            */
+        }
+        
+        function hover(src, altsrc, mouse, el) {
+            // changes 'el' on hover. Elements that call this are created in buildItems()
+            if (mouse==true) { // hovered
+                $("#img" + el.id).attr("src", altsrc); // change src to altsrc 
+                $("#img" + el.id).css("filter", "brightness(80%)"); // dim image
+                $("#btn" + el.id).css("display", "block"); // show ADD TO CART button
+            } else { // unhovered
+                $("#img" + el.id).attr("src", src); // revert src to src
+                $("#img" + el.id).css("filter", "none"); // remove dimming filter
+                $("#btn" + el.id).css("display", "none"); // hide ADD TO CART button
+            }
+        }
+        
+        function addToCart(btn, name, price) {
+            if (cart.indexOf(name) == -1) { // item is not in cart. 
+                total += parseInt(price);
+                cart.push(name, price);
+                btn.innerHTML = "REMOVE FROM CART";
+                $(btn).css({"width": "160px", "margin-left": "-80px"});
+                $(btn).attr("onclick", "rmFromCartBtn(this, '" + name + "', '" + price + "')")
+                $("#checkoutBtn").html("CART ($" + total + ")");
+            } else {
+                btn.innerHTML = "ALREADY IN CART";
+                $(btn).attr("onclick", "")
+                $(btn).css({"width": "135px", "margin-left": "-67.5px"});
+            }
+        }
+        
+        function rmFromCartBtn(btn, name, price) {
+            total -= parseInt(price); // remove cost of item from total
+            cart.splice(cart.indexOf(name), 2); // determine numeric index of the item and remove it and the subsequent element (price) from the cart array
+            $("#checkoutBtn").html("CART ($" + total + ")"); // update total in checkout button
+            btn.innerHTML = "ADD TO CART"; // revert button text
+            $(btn).css({"width": "110px", "margin-left": "-55px"}); // centre button
+            btn.setAttribute("onclick", "addToCart(this, '" + name + "', '" + price + "')"); // toggle button functionality
+        }
+        
+        
+        function checkout() {
+            // called when "CHECKOUT" button is clicked
+            demolishHome(); // in case user goes to checkout from home
+            $(".temp").css("display", "none"); // hide all temporary elements
+            $("#cart").css("display", "table"); // required if the cart was previously empty
+            $("#emptyCart").css("display", "none"); 
+            // display the cart and hide the emptycart element. Required if cart has previously been empty.
+            $("#checkout").css("display", "block"); // display the checkout element
+            if (cart.length > 0) { // cart is not empty
+                shipCost = 10; // default shipping cost is $10
+                $("#checkoutHead").text("CART (" + cart.length/2 + ")"); // display number of items in cart
+                for (i=0, p=0, table=""; p<cart.length; i++, p+=2) {
+                    // build each item in the cart into the table. 
+                    table += "<tr id='tr" + i + "'><td class='cartItem'>" + cart[p] + " <div class='rmBtn' onclick='rmCart(" + i + ", \"" + cart[p] + "\")'>(Remove)</div><br></td><td id='price" + p + "' class='cartPrice'>$" + cart[p+1] + "</td></tr>";
+                }
+                table += "<tr><td><hr></td><td><hr></td></tr><tr id='shipping'><td>Shipping: <select id='shippingDrop' onchange='shipping(this.value)'><option value=10 selected>Standard</option><option value=30>3-day</option><option value=60>Overnight</option></select></td><td><div id='shippingCost' class='cartPrice'>$10</div></td></tr><tr><td class='cartItem' style='padding-bottom: 18px;'><i>Administration Fee</i></td><td class='cartPrice'>$40</td></tr><tr><td><hr></td><td><hr></td></tr><tr id='totalTR'><td class='cartItem'>Total</td><td id='total' class='cartPrice'>$" + (total + shipCost + 40) + "</td></tr><tr><td></td><td><button id='finalBtn' class='cartPrice' onclick='pay();'>PROCEED TO PAY</button></td></tr>";
+                // add the shipping, admin fee, and PAY button to the table variable.
+                $("#cart").html(table); // cart.innerHTML = table
+            } else { // cart is empty
+                $("#cart").css("display", "none"); // hide the cart table
+                $("#emptyCart").css("display", "block"); // display the empty cart notification
+                $("#checkoutHead").text(""); // hide the checkout head by removing the text
+            }
+        }
+        
+        function rmCart(num, name) {
+            total -= cart[cart.indexOf(name)+1]; // cart.indexOf(name)+1 = index of price of (name). Find the value of cart[] at this index and subtract it from the total.
+            cart.splice(cart.indexOf(name), 2); // remove the name and price of the item from the cart array
+            $("#tr" + num).remove(); // remove the relevant table row
+            $("#checkoutBtn").text("CART ($" + total + ")"); // update the button with the new price
+            $("#checkoutHead").text("CART (" + cart.length/2 + ")"); // update the head with the new quantity
+            $("#total").text("$" + (total + shipCost + 40)); // update the sum total
+            
+            if (cart.length == 0) checkout(); 
+            // cart is empty, run the checkout function to build the 'empty cart' page
+        }
+        
+        function shipping(cost) {
+            // run when shippingDrop is changed. HTML elem built in checkout();
+            shipCost = parseFloat(cost); // update the shipCost variable
+            $("#shippingCost").text("$" + shipCost); // change the displayed shipping cost
+            $("#total").text("$" + (total + shipCost + 40)); // update the total
+        }
+        
+        function pay() {
+            for (i=0, receipt=""; i<cart.length; i++) {
+                // run through cart[], adding even elements (item names) to the receipt variable
+                if (i % 2 === 0) receipt += cart[i] + ", "; 
+            }
+            finalTotal = total + shipCost + 40; // calculate the final total
+            shipType = $("#shippingDrop option:selected").text(); // determine the selected shipping type.
+            alert("Your order for " + receipt.slice(0, -2)  + " at the cost of $" + finalTotal + " with " + shipType.toLowerCase() + " shipping has been placed."); 
+            // distributor would want cart[], shipType, finalTotal?
+        }
+    </script>
+</head>
+
+<body id="index" onscroll="checkMenu();" onload="buildHome();">
+    <!----------------------------- MENU ----------------------------->
+    <table id="menu">
+        <tr>
+            <td>
+                <img src="images/logo.svg" id="logo" onclick="redirect(null,'home')"><br>
+            </td>
+            <div>
+            <td class="cell">
+                <button class="label" onclick="allType('men')">MEN</button>
+                <div class="menuList">
+                    <a onclick="redirect(this.name,'men');" name="shirts">Shirts</a>
+                    <a onclick="redirect(this.name,'men');" name="pants">Pants</a>
+                    <a onclick="redirect(this.name,'men');" name="hoodies">Hoodies</a>
+                    <a onclick="redirect(this.name,'men');" name="jackets">Jackets</a>
+                </div>
+            </td>
+            <td class="cell">
+                <button class="label" onclick="allType('women')">WOMEN</button>
+                <div class="menuList">
+                    <a onclick="redirect(this.name,'women');" name="dresses">Dresses</a>
+                    <a onclick="redirect(this.name,'women');" name="skirts">Skirts</a>
+                    <a onclick="redirect(this.name,'women');" name="pants">Pants</a>
+                    <a onclick="redirect(this.name,'women');" name="jackets">Jackets</a>
+                </div>
+            </td>
+            <td class="cell">
+                <button class="label" onclick="allType('kids')">KIDS</button>
+                <div class="menuList">
+                    <a onclick="redirect(this.name,'kids');" name="boys">Boys</a>
+                    <a onclick="redirect(this.name,'kids');" name="girls">Girls</a>
+                </div>
+            </td>
+            <td class="cell">
+                <button class="label" id="checkoutBtn" onclick="checkout();">CART ($0)</button> 
+            </td>
+        </tr>
+    </table>
+    <!----------------------------- HOME ----------------------------->
+    <div id="welcome" class="temp">COME RIGHT IN.</div><br>
+    <div id="subhead" class="temp">Welcome to the home of Australian fashion.</div>
+    <!----------------------------- OTHER ----------------------------->
+    <div id="other" class="temp">
+        <div id="filter">
+            <div id="filterHead">FILTERS</div>
+            <form id="filterBoxes" name="filterForm">
+                <div id="filterTitle">MEN</div>
+                <input type="checkbox" name="men" value="shirts" onclick="filter(this)">Shirts<br>
+                <input type="checkbox" name="men" value="pants" onclick="filter(this)">Pants<br>
+                <input type="checkbox" name="men" value="hoodies" onclick="filter(this)">Hoodies<br>
+                <input type="checkbox" name="men" value="jackets" onclick="filter(this)">Jackets<br><br><hr><br>
+                
+                <div id="filterTitle">WOMEN</div>
+                <input type="checkbox" name="women" value="dresses" onclick="filter(this)">Dresses<br>
+                <input type="checkbox" name="women" value="skirts" onclick="filter(this)">Skirts<br>
+                <input type="checkbox" name="women" value="pants" onclick="filter(this)">Pants<br>
+                <input type="checkbox" name="women" value="jackets" onclick="filter(this)">Jackets<br><br><hr><br>    
+                <div id="filterTitle">KIDS</div>
+                <input type="checkbox" name="kids" value="boys" onclick="filter(this)">Boys<br>
+                <input type="checkbox" name="kids" value="girls" onclick="filter(this)">Girls<br>
+            </form>
+        </div>
+        <div id="clothes"></div>
+    </div>
+    <!----------------------------- CHECKOUT ----------------------------->
+    <div id="checkout" class="temp">
+        <div id="checkoutHead"></div>
+        <table id="cart" cellspacing="0" cellpadding="0"></table>
+        <div id="emptyCart">YOUR CART IS EMPTY.</div>
+    </div>
+</body>
+</html>
